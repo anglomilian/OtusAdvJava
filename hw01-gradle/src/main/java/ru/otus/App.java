@@ -10,5 +10,8 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
+        HelloOtus crisisList = new HelloOtus("eggs", "toilet paper", "grechka");
+        System.out.println("My order total: " + crisisList.CheckOut());
+
     }
 }
