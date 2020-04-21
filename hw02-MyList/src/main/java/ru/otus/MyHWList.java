@@ -12,7 +12,9 @@ public class MyHWList<E> implements List<E> {
     private E[] elements;
 
     public MyHWList(int initialSize) {
-        if (initialSize < 0 || initialSize > MAX_ARRAY_SIZE) throw new IllegalArgumentException("Wrong list size.");
+        if (initialSize < 0 || initialSize > MAX_ARRAY_SIZE) {
+            throw new IllegalArgumentException("Wrong list size.");
+        }
         elements = (E[]) new Object[initialSize];
     }
 
@@ -26,15 +28,15 @@ public class MyHWList<E> implements List<E> {
         }
     }
 
-    private void checkSizeOfArray(int index){
-        if (size <= index) extendSizeOfArray(index);
-    }
-
     private void extendSizeOfArray(int index) {
-        if (size + (index - size) > MAX_ARRAY_SIZE) throw new IndexOutOfBoundsException("Can not create so large list.");
-        int newLength = size + (index - size);
-        elements = Arrays.copyOf(elements, newLength);
-        size = newLength;
+        if (size <= index) {
+            if (size + (index - size) > MAX_ARRAY_SIZE) {
+                throw new IndexOutOfBoundsException("Can not create so large list.");
+            }
+            int newLength = size + (index - size);
+            elements = Arrays.copyOf(elements, newLength);
+            size = newLength;
+        }
     }
 
     @Override
@@ -46,22 +48,16 @@ public class MyHWList<E> implements List<E> {
     public boolean isEmpty() {
         return size == 0;
     }
-    //!!!!
+
     @Override
     public boolean add(E element) {
-        checkSizeOfArray(size + 1);
-        if (elements[size-1] == null) {
-            elements[size-1] = element;
-            modCounter++;
-            return true;
-        } else {
-            return false;
-        }
+        add(size, element);
+        return true;
     }
     @Override
     public void add(int index, E element) {
         checkIndex(index);
-        checkSizeOfArray(size + 1);
+        extendSizeOfArray(size + 1);
         System.arraycopy(elements, index, elements, index + 1, size - index -1);
         elements[index] = element;
         modCounter++;
@@ -141,8 +137,9 @@ public class MyHWList<E> implements List<E> {
 
     @Override
     public void clear() {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             elements[i] = null;
+        }
         size = 0;
         modCounter++;
     }
@@ -231,8 +228,9 @@ public class MyHWList<E> implements List<E> {
 
         @Override
         public void set(E e) {
-            if (lastRet < 0)
+            if (lastRet < 0) {
                 throw new IllegalStateException();
+            }
             this.checkForComodification();
             try {
                 MyHWList.this.set(lastRet, e);
@@ -244,7 +242,6 @@ public class MyHWList<E> implements List<E> {
         @Override
         public void add(E e) {
             this.checkForComodification();
-
             try {
                 int ex = this.cursor;
                 MyHWList.this.add(ex, (E) e);
