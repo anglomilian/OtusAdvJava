@@ -32,6 +32,6 @@ allprojects {
 }
 
 //gradle -q hello
-task hello {
-    println 'Hello world!'
-}
+//task hello {
+//    println 'Hello world!'
+//}
