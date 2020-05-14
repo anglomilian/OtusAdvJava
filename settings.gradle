@@ -2,3 +2,7 @@
 
 rootProject.name = 'OtusAdvJava'
 include 'hw01-gradle'
+include 'hw02-MyList'
+include 'hw06-AnRef'
+include 'hw07-GC'
+include 'hw09-BytecodeLog'
