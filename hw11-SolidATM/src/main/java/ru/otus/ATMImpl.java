@@ -5,15 +5,15 @@ import java.util.TreeSet;
 
 public class ATMImpl implements ATM {
 
-    private Set<Cassette> dispenser = new TreeSet<>();
+    private Set<Banknote> dispenser = new TreeSet<>();
 
     @Override
-    public void addToDispenser(Cassette cassette) {
-        dispenser.add(cassette);
+    public void addToDispenser(Banknote banknote) {
+        dispenser.add(banknote);
     }
 
     @Override
-    public Set<Cassette> dispense(int clientSum) {
+    public Set<Banknote> dispense(int clientSum) {
         if (canDispense(clientSum))
             return createSetOfBanknotesForDispense(clientSum);
         throw new IllegalArgumentException("This sum cann't be dispensed!");
@@ -22,29 +22,29 @@ public class ATMImpl implements ATM {
     @Override
     public int getBalance() {
         int balance = 0;
-        for (Cassette cassette : dispenser) {
-            balance += cassette.getValue().getNumericValue() * cassette.getBanknotesNumber();
+        for (Banknote banknote : dispenser) {
+            balance += banknote.getValue().getNumericValue() * banknote.getBanknotesNumber();
         }
         return balance;
     }
 
-    private Set<Cassette> createSetOfBanknotesForDispense(int clientSum) {
+    private Set<Banknote> createSetOfBanknotesForDispense(int clientSum) {
         int remainder = clientSum;
-        Set<Cassette> setForDispense = new TreeSet<>();
+        Set<Banknote> setForDispense = new TreeSet<>();
 
-        for (Cassette cassette : dispenser) {
-            Currency cassetteValue = cassette.getValue();
-            int value = cassetteValue.getNumericValue();
-            int banknotesNumber = cassette.getBanknotesNumber();
+        for (Banknote banknote : dispenser) {
+            Nominal banknoteValue = banknote.getValue();
+            int value = banknoteValue.getNumericValue();
+            int banknotesNumber = banknote.getBanknotesNumber();
             if (remainder >= value) {
                 int banknotesToDraw = remainder / value;
                 if (banknotesToDraw > banknotesNumber) {
                     banknotesToDraw = banknotesNumber;
                 }
-                setForDispense.add(new CassetteImpl(cassetteValue, banknotesToDraw));
+                setForDispense.add(new BanknoteImpl(banknoteValue, banknotesToDraw));
                 remainder -= banknotesToDraw * value;
             } else {
-                setForDispense.add(new CassetteImpl(cassetteValue, 0));
+                setForDispense.add(new BanknoteImpl(banknoteValue, 0));
             }
         }
         if (remainder == 0) {
@@ -56,12 +56,12 @@ public class ATMImpl implements ATM {
         }
     }
 
-    private void updateDispenser(Set<Cassette> setForDispense, Set<Cassette> cassettes) {
-        Set<Cassette>tempDispenser = new TreeSet<>();
-        for(Cassette beforeDispense : cassettes) {
-            for (Cassette dispensed : setForDispense) {
+    private void updateDispenser(Set<Banknote> setForDispense, Set<Banknote> banknotes) {
+        Set<Banknote>tempDispenser = new TreeSet<>();
+        for(Banknote beforeDispense : banknotes) {
+            for (Banknote dispensed : setForDispense) {
                 if (beforeDispense.equals(dispensed)) {
-                    tempDispenser.add(new CassetteImpl(beforeDispense.getValue(),
+                    tempDispenser.add(new BanknoteImpl(beforeDispense.getValue(),
                             beforeDispense.getBanknotesNumber() - dispensed.getBanknotesNumber()));
                 }
             }

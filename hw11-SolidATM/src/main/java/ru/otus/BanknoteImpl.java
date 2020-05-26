@@ -2,18 +2,18 @@ package ru.otus;
 
 import java.util.Objects;
 
-public class CassetteImpl implements Cassette {
+public class BanknoteImpl implements Banknote {
 
-    private final Currency value;
+    private final Nominal value;
     private final int banknotesNumber;
 
-    CassetteImpl(Currency value, int banknotesNumber) {
+    BanknoteImpl(Nominal value, int banknotesNumber) {
         this.value = value;
         this.banknotesNumber = banknotesNumber;
     }
 
     @Override
-    public Currency getValue() {
+    public Nominal getValue() {
         return value;
     }
 
@@ -23,7 +23,7 @@ public class CassetteImpl implements Cassette {
     }
 
     @Override
-    public int compareTo(Cassette c) {
+    public int compareTo(Banknote c) {
         return c.getValue().getNumericValue() - this.value.getNumericValue();
     }
 
@@ -31,8 +31,8 @@ public class CassetteImpl implements Cassette {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CassetteImpl cassette = (CassetteImpl) o;
-        return value == cassette.value;
+        BanknoteImpl banknote = (BanknoteImpl) o;
+        return value == banknote.value;
     }
 
     @Override

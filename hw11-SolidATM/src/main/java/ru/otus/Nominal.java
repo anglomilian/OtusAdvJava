@@ -1,6 +1,6 @@
 package ru.otus;
 
-public enum Currency {
+public enum Nominal {
 
     ONE_HUNDRED(100),
     FIVE_HUNDREDS(500),
@@ -8,9 +8,9 @@ public enum Currency {
     TWO_THOUSANDS(2000),
     FIVE_THOUSANDS(5000);
 
-    private int numValue;
+    private final int numValue;
 
-    Currency(int numValue) {
+    Nominal(int numValue) {
         this.numValue = numValue;
     }
 
