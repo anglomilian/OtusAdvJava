@@ -1,68 +1,62 @@
 package ru.otus;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class ATMImpl implements ATM {
 
-    private Set<Banknote> dispenser = new TreeSet<>();
+    private Map<Nominal, Integer> dispenser = new EnumMap<>(Nominal.class);
 
     @Override
-    public void addToDispenser(Banknote banknote) {
-        dispenser.add(banknote);
+    public void addToDispenser(Nominal banknote, Integer banknotesNumber) {
+        dispenser.put(banknote, banknotesNumber);
     }
 
     @Override
-    public Set<Banknote> dispense(int clientSum) {
-        if (canDispense(clientSum))
-            return createSetOfBanknotesForDispense(clientSum);
-        throw new IllegalArgumentException("This sum cann't be dispensed!");
+    public void dispense(int clientSum) {
+        if (canDispense(clientSum)){
+            createMapOfBanknotesForDispense(clientSum);
+        } else {
+            throw new IllegalArgumentException("This sum cann't be dispensed!");
+        }
     }
 
     @Override
     public int getBalance() {
-        int balance = 0;
-        for (Banknote banknote : dispenser) {
-            balance += banknote.getValue().getNumericValue() * banknote.getBanknotesNumber();
-        }
-        return balance;
+        return dispenser.entrySet().stream().mapToInt(entry -> entry.getKey().getNumericValue() * entry.getValue()).sum();
     }
 
-    private Set<Banknote> createSetOfBanknotesForDispense(int clientSum) {
+    private void createMapOfBanknotesForDispense(int clientSum) {
         int remainder = clientSum;
-        Set<Banknote> setForDispense = new TreeSet<>();
+        Map<Nominal, Integer> mapForDispense = new EnumMap<>(Nominal.class);
 
-        for (Banknote banknote : dispenser) {
-            Nominal banknoteValue = banknote.getValue();
-            int value = banknoteValue.getNumericValue();
-            int banknotesNumber = banknote.getBanknotesNumber();
+        for (Nominal nom : dispenser.keySet()) {
+            int value = nom.getNumericValue();
+            int banknotesNumber = dispenser.get(nom);
             if (remainder >= value) {
                 int banknotesToDraw = remainder / value;
                 if (banknotesToDraw > banknotesNumber) {
                     banknotesToDraw = banknotesNumber;
                 }
-                setForDispense.add(new BanknoteImpl(banknoteValue, banknotesToDraw));
+                mapForDispense.put(nom, banknotesToDraw);
                 remainder -= banknotesToDraw * value;
             } else {
-                setForDispense.add(new BanknoteImpl(banknoteValue, 0));
+                mapForDispense.put(nom, 0);
             }
         }
         if (remainder == 0) {
-            updateDispenser(setForDispense, dispenser);
-            return setForDispense;
+            updateDispenser(mapForDispense);
         }
         else{
             throw new IllegalArgumentException("Please input another sum.");
         }
     }
 
-    private void updateDispenser(Set<Banknote> setForDispense, Set<Banknote> banknotes) {
-        Set<Banknote>tempDispenser = new TreeSet<>();
-        for(Banknote beforeDispense : banknotes) {
-            for (Banknote dispensed : setForDispense) {
-                if (beforeDispense.equals(dispensed)) {
-                    tempDispenser.add(new BanknoteImpl(beforeDispense.getValue(),
-                            beforeDispense.getBanknotesNumber() - dispensed.getBanknotesNumber()));
+    private void updateDispenser(Map<Nominal, Integer> mapForDispense) {
+        Map<Nominal, Integer> tempDispenser = new EnumMap<>(Nominal.class);
+        for(Nominal nom : dispenser.keySet()) {
+            for (Nominal nominal : mapForDispense.keySet()) {
+                if (nom.getNumericValue() == nominal.getNumericValue()) {
+                    tempDispenser.put(nominal, dispenser.get(nom) - mapForDispense.get(nominal));
                 }
             }
         }

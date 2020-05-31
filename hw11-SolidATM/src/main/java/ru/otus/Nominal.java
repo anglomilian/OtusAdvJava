@@ -1,12 +1,11 @@
 package ru.otus;
 
 public enum Nominal {
-
-    ONE_HUNDRED(100),
-    FIVE_HUNDREDS(500),
-    ONE_THOUSAND(1000),
+    FIVE_THOUSANDS(5000),
     TWO_THOUSANDS(2000),
-    FIVE_THOUSANDS(5000);
+    ONE_THOUSAND(1000),
+    FIVE_HUNDREDS(500),
+    ONE_HUNDRED(100);
 
     private final int numValue;
 
